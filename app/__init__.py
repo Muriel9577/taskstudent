@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 
-from . import auth, db
+from . import auth, db, subjects
 
 
 def create_app(test_config=None):
@@ -17,6 +17,7 @@ def create_app(test_config=None):
     os.makedirs(app.instance_path, exist_ok=True)
     db.init_app(app)
     app.register_blueprint(auth.bp)
+    app.register_blueprint(subjects.bp)
 
     # Створюємо таблиці при першому запуску
     with app.app_context():

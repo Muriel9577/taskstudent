@@ -25,8 +25,19 @@
     </div>
 
     <div id="user" hidden>
-      <p>Ви увійшли як <strong id="user-name"></strong></p>
-      <button id="logout" type="button">Вийти</button>
+      <div class="row">
+        <p>Ви увійшли як <strong id="user-name"></strong></p>
+        <button id="logout" class="secondary" type="button">Вийти</button>
+      </div>
+
+      <h2>Мої предмети</h2>
+      <form id="subject-form" class="inline">
+        <input id="subject-title" placeholder="Назва предмета" maxlength="100" required>
+        <input id="subject-pass" type="number" min="0" step="any" placeholder="Прохідний бал" required>
+        <button type="submit">Додати</button>
+      </form>
+      <ul id="subjects" class="list"></ul>
+      <p id="subjects-empty" class="muted" hidden>Предметів ще немає. Додайте перший.</p>
     </div>
 
     <p id="message" role="alert"></p>
