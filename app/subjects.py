@@ -3,7 +3,7 @@ from flask import Blueprint, g, jsonify, request
 from .auth import error, login_required
 from .db import get_db
 from .services import clean_number
-from .validation import ValidationError, parse_number, parse_text
+from .validation import parse_number, parse_text
 
 bp = Blueprint("subjects", __name__, url_prefix="/api/subjects")
 

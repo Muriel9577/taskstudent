@@ -5,7 +5,7 @@ from flask import Blueprint, g, jsonify, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db import get_db
-from .validation import ValidationError, parse_password, parse_text
+from .validation import MAX_PASSWORD_LEN, ValidationError, parse_password, parse_text
 
 bp = Blueprint("auth", __name__, url_prefix="/api")
 
@@ -77,6 +77,9 @@ def login():
     data = request.get_json(silent=True) or {}
     email = str(data.get("email", "")).strip().lower()
     password = str(data.get("password", ""))
+    # Надто довгі дані не можуть бути правильними: не витрачаємо час на хешування
+    if len(email) > MAX_EMAIL_LEN or len(password) > MAX_PASSWORD_LEN:
+        return error("Неправильний e-mail або пароль", 401)
 
     user = get_db().execute(
         "SELECT id, email, name, password_hash FROM users WHERE email = ?", (email,)

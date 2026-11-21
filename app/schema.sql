@@ -26,3 +26,7 @@ CREATE TABLE tasks (
     status TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'done')),
     score REAL CHECK (score IS NULL OR (score >= 0 AND score <= max_score))
 );
+
+-- Індекси на зовнішніх ключах: швидкі вибірки предметів користувача та завдань предмета
+CREATE INDEX idx_subjects_user_id ON subjects(user_id);
+CREATE INDEX idx_tasks_subject_id ON tasks(subject_id);
