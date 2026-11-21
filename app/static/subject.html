@@ -12,6 +12,24 @@
     <h1 id="subject-title">Предмет</h1>
     <p id="subject-pass" class="muted"></p>
 
+    <section class="progress" aria-label="Прогрес по предмету">
+      <div class="ring-box">
+        <svg class="ring" viewBox="0 0 100 100" role="img" aria-label="Відсоток виконаних завдань">
+          <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
+          <circle id="ring-fg" class="ring-fg" cx="50" cy="50" r="44" transform="rotate(-90 50 50)"></circle>
+          <text id="ring-text" x="50" y="57" text-anchor="middle">0%</text>
+        </svg>
+        <p id="ring-caption" class="muted"></p>
+      </div>
+      <div class="score-box">
+        <div class="bar" role="progressbar" aria-label="Бали відносно прохідного" aria-valuemin="0" aria-valuemax="100">
+          <div id="bar-fill" class="bar-fill"></div>
+        </div>
+        <p id="score-text"></p>
+        <p id="score-warn" class="warn" hidden></p>
+      </div>
+    </section>
+
     <h2>Завдання</h2>
     <form id="task-form" class="tasks-form">
       <input id="task-title" placeholder="Назва завдання" maxlength="100" required>

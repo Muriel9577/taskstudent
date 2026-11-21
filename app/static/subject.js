@@ -41,6 +41,45 @@ async function load() {
   list.replaceChildren();
   $("tasks-empty").hidden = data.length > 0;
   data.forEach((t) => list.appendChild(taskItem(t)));
+
+  const progress = await api(`/api/subjects/${subjectId}/progress`);
+  if (progress.ok) renderProgress(progress.data);
+}
+
+const RING_LENGTH = 276.46; // довжина кола з радіусом 44
+
+function renderProgress(p) {
+  $("ring-fg").style.strokeDashoffset = RING_LENGTH * (1 - p.percent / 100);
+  $("ring-text").textContent = `${p.percent}%`;
+  $("ring-caption").textContent = p.total_tasks === 0
+    ? "Завдань ще немає"
+    : `Виконано ${p.done_tasks} з ${p.total_tasks} завдань`;
+
+  const fill = $("bar-fill");
+  const bar = fill.parentElement;
+  const warn = $("score-warn");
+  warn.hidden = true;
+
+  if (p.pass_score === 0) {
+    fill.style.width = "0%";
+    fill.classList.remove("passed");
+    bar.setAttribute("aria-valuenow", "0");
+    $("score-text").textContent = `Прохідний бал не вказано. Набрано: ${p.earned_score}`;
+    return;
+  }
+
+  const share = Math.min(100, Math.round((p.earned_score / p.pass_score) * 100));
+  fill.style.width = `${share}%`;
+  fill.classList.toggle("passed", p.passed);
+  bar.setAttribute("aria-valuenow", String(share));
+  $("score-text").textContent = p.passed
+    ? `Прохідний бал досягнуто: ${p.earned_score} з ${p.pass_score}`
+    : `Набрано ${p.earned_score} з ${p.pass_score} потрібних, ще ${p.remaining_to_pass}`;
+
+  if (!p.reachable && p.total_tasks > 0) {
+    warn.textContent = `Навіть за максимальні бали за решту завдань прохідний бал недосяжний (максимум ${p.max_possible_score}).`;
+    warn.hidden = false;
+  }
 }
 
 async function save(task, changes) {

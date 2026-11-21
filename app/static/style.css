@@ -38,3 +38,18 @@ form.tasks-form input { margin: 0; }
 .task .score { width: 70px; }
 .task input[type=checkbox] { width: auto; }
 .task input[type=date] { width: auto; }
+
+.progress { display: flex; gap: 24px; align-items: center; margin: 16px 0; padding: 16px; background: #f9fafb; border-radius: 12px; }
+.ring-box { text-align: center; }
+.ring { width: 110px; height: 110px; }
+.ring-bg { fill: none; stroke: #e5e7eb; stroke-width: 10; }
+.ring-fg { fill: none; stroke: #2563eb; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 276.46; stroke-dashoffset: 276.46; transition: stroke-dashoffset .4s; }
+.ring text { font-size: 20px; font-weight: 700; fill: #111827; }
+.ring-box p { margin: 4px 0 0; font-size: 13px; }
+.score-box { flex: 1; }
+.bar { height: 14px; background: #e5e7eb; border-radius: 7px; overflow: hidden; }
+.bar-fill { height: 100%; width: 0; background: #2563eb; transition: width .4s; }
+.bar-fill.passed { background: #16a34a; }
+.score-box p { margin: 8px 0 0; }
+.warn { color: #b45309; font-size: 14px; }
+@media (max-width: 560px) { .progress { flex-direction: column; align-items: stretch; } form.tasks-form { grid-template-columns: 1fr 1fr; } }
