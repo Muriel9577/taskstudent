@@ -26,9 +26,12 @@ def test_task_numbers_are_returned_without_trailing_zero(client, sid):
 
 
 def test_error_message_shows_whole_number_without_dot_zero(client, sid):
-    res = add_task(client, sid, score=11)
+    # Максимум береться з бази (REAL), тому помилка з'являється саме при зміні завдання
+    task_id = add_task(client, sid).get_json()["id"]
+    res = client.put(f"/api/tasks/{task_id}", json={"score": 11})
     assert res.status_code == 400
     assert "10.0" not in res.get_json()["error"]
+    assert "(10)" in res.get_json()["error"]
 
 
 def test_huge_scores_are_rejected_instead_of_crashing_progress(client, sid):
