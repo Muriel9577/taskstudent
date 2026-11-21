@@ -2,6 +2,11 @@ import math
 from datetime import date
 
 
+MAX_NUMBER = 1_000_000  # верхня межа для балів: захист від переповнення сум
+MIN_PASSWORD_LEN = 6
+MAX_PASSWORD_LEN = 128  # довгі паролі уповільнюють хешування і дозволяють перевантажити сервер
+
+
 class ValidationError(Exception):
     """Помилка перевірки вхідних даних (повертається клієнту як 400)."""
 
@@ -15,8 +20,8 @@ def parse_text(value, field, max_len=100, required=True):
     return text
 
 
-def parse_number(value, field, minimum=0, allow_zero=True):
-    """Приймає тільки скінченне число (не рядок, не булеве значення)."""
+def parse_number(value, field, minimum=0, allow_zero=True, maximum=MAX_NUMBER):
+    """Приймає тільки скінченне число в межах [minimum, maximum] (не рядок, не булеве значення)."""
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         raise ValidationError(f"Поле «{field}» має бути числом")
     if not math.isfinite(value):
@@ -24,6 +29,8 @@ def parse_number(value, field, minimum=0, allow_zero=True):
     if value < minimum or (not allow_zero and value == minimum):
         sign = "більшим за" if not allow_zero else "не меншим за"
         raise ValidationError(f"Поле «{field}» має бути {sign} {minimum}")
+    if value > maximum:
+        raise ValidationError(f"Поле «{field}» не може бути більшим за {maximum}")
     return value
 
 
@@ -41,3 +48,12 @@ def parse_choice(value, field, allowed):
     if value not in allowed:
         raise ValidationError(f"Поле «{field}» має бути одним зі значень: {', '.join(allowed)}")
     return value
+
+
+def parse_password(value):
+    password = "" if value is None else str(value)
+    if not MIN_PASSWORD_LEN <= len(password) <= MAX_PASSWORD_LEN:
+        raise ValidationError(
+            f"Пароль має містити від {MIN_PASSWORD_LEN} до {MAX_PASSWORD_LEN} символів"
+        )
+    return password

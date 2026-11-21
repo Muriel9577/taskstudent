@@ -2,13 +2,14 @@ from flask import Blueprint, g, jsonify, request
 
 from .auth import error, login_required
 from .db import get_db
+from .services import clean_number
 from .validation import ValidationError, parse_number, parse_text
 
 bp = Blueprint("subjects", __name__, url_prefix="/api/subjects")
 
 
 def subject_to_dict(row):
-    return {"id": row["id"], "title": row["title"], "pass_score": row["pass_score"]}
+    return {"id": row["id"], "title": row["title"], "pass_score": clean_number(row["pass_score"])}
 
 
 def get_own_subject(subject_id):
@@ -17,11 +18,6 @@ def get_own_subject(subject_id):
         "SELECT id, title, pass_score FROM subjects WHERE id = ? AND user_id = ?",
         (subject_id, g.user["id"]),
     ).fetchone()
-
-
-@bp.errorhandler(ValidationError)
-def handle_validation_error(exc):
-    return error(str(exc), 400)
 
 
 @bp.get("")
@@ -47,7 +43,7 @@ def create_subject():
         (g.user["id"], title, pass_score),
     )
     db.commit()
-    return jsonify({"id": cur.lastrowid, "title": title, "pass_score": pass_score}), 201
+    return jsonify({"id": cur.lastrowid, "title": title, "pass_score": clean_number(pass_score)}), 201
 
 
 @bp.get("/<int:subject_id>")
@@ -80,7 +76,7 @@ def update_subject(subject_id):
         (title, pass_score, subject_id),
     )
     db.commit()
-    return jsonify({"id": subject_id, "title": title, "pass_score": pass_score})
+    return jsonify({"id": subject_id, "title": title, "pass_score": clean_number(pass_score)})
 
 
 @bp.delete("/<int:subject_id>")

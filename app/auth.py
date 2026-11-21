@@ -5,11 +5,16 @@ from flask import Blueprint, g, jsonify, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db import get_db
+from .validation import ValidationError, parse_password, parse_text
 
 bp = Blueprint("auth", __name__, url_prefix="/api")
 
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
-MIN_PASSWORD_LEN = 6
+MAX_EMAIL_LEN = 254
+
+# Хеш неіснуючого пароля: перевіряємо його для невідомого e-mail, щоб відповідь
+# займала стільки ж часу, і за часом не можна було дізнатися, які адреси зареєстровані.
+DUMMY_HASH = generate_password_hash("not-a-real-password")
 
 
 def error(message, status):
@@ -39,19 +44,19 @@ def load_current_user():
         ).fetchone()
 
 
+def parse_email(value):
+    email = parse_text(value, "E-mail", max_len=MAX_EMAIL_LEN).lower()
+    if not EMAIL_RE.match(email):
+        raise ValidationError("Некоректний e-mail")
+    return email
+
+
 @bp.post("/register")
 def register():
     data = request.get_json(silent=True) or {}
-    email = str(data.get("email", "")).strip().lower()
-    password = str(data.get("password", ""))
-    name = str(data.get("name", "")).strip()
-
-    if not EMAIL_RE.match(email):
-        return error("Некоректний e-mail", 400)
-    if len(password) < MIN_PASSWORD_LEN:
-        return error(f"Пароль має містити щонайменше {MIN_PASSWORD_LEN} символів", 400)
-    if not name:
-        return error("Вкажіть ім'я", 400)
+    email = parse_email(data.get("email"))
+    password = parse_password(data.get("password"))
+    name = parse_text(data.get("name"), "Ім'я")
 
     db = get_db()
     if db.execute("SELECT 1 FROM users WHERE email = ?", (email,)).fetchone():
@@ -76,8 +81,10 @@ def login():
     user = get_db().execute(
         "SELECT id, email, name, password_hash FROM users WHERE email = ?", (email,)
     ).fetchone()
+    password_hash = user["password_hash"] if user else DUMMY_HASH
+    password_ok = check_password_hash(password_hash, password)
     # Однакова відповідь для невідомого e-mail і неправильного пароля
-    if user is None or not check_password_hash(user["password_hash"], password):
+    if user is None or not password_ok:
         return error("Неправильний e-mail або пароль", 401)
 
     session.clear()

@@ -2,6 +2,7 @@ from flask import Blueprint, g, jsonify, request
 
 from .auth import error, login_required
 from .db import get_db
+from .services import clean_number
 from .subjects import get_own_subject
 from .validation import ValidationError, parse_choice, parse_date, parse_number, parse_text
 
@@ -12,8 +13,12 @@ TASK_COLUMNS = "t.id, t.subject_id, t.title, t.description, t.deadline, t.max_sc
 
 
 def task_to_dict(row):
-    return {key: row[key] for key in
+    task = {key: row[key] for key in
             ("id", "subject_id", "title", "description", "deadline", "max_score", "status", "score")}
+    task["max_score"] = clean_number(task["max_score"])
+    if task["score"] is not None:
+        task["score"] = clean_number(task["score"])
+    return task
 
 
 def get_own_task(task_id):
@@ -31,13 +36,8 @@ def check_score(score, max_score):
         return None
     score = parse_number(score, "Бал")
     if score > max_score:
-        raise ValidationError(f"Бал не може бути більшим за максимальний ({max_score})")
+        raise ValidationError(f"Бал не може бути більшим за максимальний ({clean_number(max_score)})")
     return score
-
-
-@bp.errorhandler(ValidationError)
-def handle_validation_error(exc):
-    return error(str(exc), 400)
 
 
 @bp.get("/subjects/<int:subject_id>/tasks")
