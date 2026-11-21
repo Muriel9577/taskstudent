@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 
-from . import db
+from . import auth, db
 
 
 def create_app(test_config=None):
@@ -16,10 +16,15 @@ def create_app(test_config=None):
 
     os.makedirs(app.instance_path, exist_ok=True)
     db.init_app(app)
+    app.register_blueprint(auth.bp)
 
     # Створюємо таблиці при першому запуску
     with app.app_context():
         if not os.path.exists(app.config["DATABASE"]):
             db.init_db()
+
+    @app.get("/")
+    def index():
+        return app.send_static_file("index.html")
 
     return app

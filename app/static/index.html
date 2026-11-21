@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TaskStudent</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="card">
+    <h1>TaskStudent</h1>
+    <p class="muted">Облік предметів, завдань і балів для студента</p>
+
+    <div id="guest">
+      <div class="tabs">
+        <button id="tab-login" class="active" type="button">Вхід</button>
+        <button id="tab-register" type="button">Реєстрація</button>
+      </div>
+      <form id="form">
+        <label id="name-row" hidden>Ім'я <input id="name" autocomplete="name"></label>
+        <label>E-mail <input id="email" type="email" autocomplete="email" required></label>
+        <label>Пароль <input id="password" type="password" autocomplete="current-password" required></label>
+        <button id="submit" type="submit">Увійти</button>
+      </form>
+    </div>
+
+    <div id="user" hidden>
+      <p>Ви увійшли як <strong id="user-name"></strong></p>
+      <button id="logout" type="button">Вийти</button>
+    </div>
+
+    <p id="message" role="alert"></p>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>
