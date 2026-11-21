@@ -76,10 +76,16 @@ async function loadSubjects() {
   data.forEach((s) => list.appendChild(subjectItem(s)));
 }
 
+function subjectLink(s) {
+  const a = text("a", s.title, "grow");
+  a.href = `/subject/${s.id}`;
+  return a;
+}
+
 function subjectItem(s) {
   const li = document.createElement("li");
   li.append(
-    text("span", s.title, "grow"),
+    subjectLink(s),
     text("span", `прохідний бал: ${s.pass_score}`, "pass"),
     button("Змінити", "secondary", () => li.replaceWith(subjectEditor(s))),
     button("Видалити", "danger", async () => {

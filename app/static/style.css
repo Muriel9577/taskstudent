@@ -1,5 +1,5 @@
 body { font-family: system-ui, sans-serif; background: #f3f4f6; margin: 0; }
-.card { max-width: 520px; margin: 60px auto; background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+.card { max-width: 680px; margin: 60px auto; background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
 h1 { margin: 0 0 4px; }
 .muted { color: #6b7280; margin-top: 0; }
 .tabs { display: flex; gap: 8px; margin: 16px 0; }
@@ -25,3 +25,16 @@ form.inline input:nth-child(2) { flex: 1; }
 .list .grow { flex: 1; }
 .list .pass { color: #6b7280; font-size: 14px; }
 .list li input { margin: 0; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+.back { display: inline-block; margin-bottom: 8px; font-size: 14px; }
+form.tasks-form { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 8px; }
+form.tasks-form input { margin: 0; }
+.task { flex-wrap: wrap; }
+.task.done .title { text-decoration: line-through; color: #6b7280; }
+.task .title { flex: 1; min-width: 120px; }
+.task .meta { color: #6b7280; font-size: 14px; }
+.task .score { width: 70px; }
+.task input[type=checkbox] { width: auto; }
+.task input[type=date] { width: auto; }

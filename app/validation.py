@@ -1,4 +1,5 @@
 import math
+from datetime import date
 
 
 class ValidationError(Exception):
@@ -23,4 +24,20 @@ def parse_number(value, field, minimum=0, allow_zero=True):
     if value < minimum or (not allow_zero and value == minimum):
         sign = "більшим за" if not allow_zero else "не меншим за"
         raise ValidationError(f"Поле «{field}» має бути {sign} {minimum}")
+    return value
+
+
+def parse_date(value, field):
+    """Дата у форматі РРРР-ММ-ДД або None, якщо дату не вказано."""
+    if value is None or value == "":
+        return None
+    try:
+        return date.fromisoformat(str(value)).isoformat()
+    except ValueError:
+        raise ValidationError(f"Поле «{field}» має бути датою у форматі РРРР-ММ-ДД")
+
+
+def parse_choice(value, field, allowed):
+    if value not in allowed:
+        raise ValidationError(f"Поле «{field}» має бути одним зі значень: {', '.join(allowed)}")
     return value

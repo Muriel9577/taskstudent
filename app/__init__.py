@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 
-from . import auth, db, subjects
+from . import auth, db, subjects, tasks
 
 
 def create_app(test_config=None):
@@ -18,6 +18,7 @@ def create_app(test_config=None):
     db.init_app(app)
     app.register_blueprint(auth.bp)
     app.register_blueprint(subjects.bp)
+    app.register_blueprint(tasks.bp)
 
     # Створюємо таблиці при першому запуску
     with app.app_context():
@@ -27,5 +28,9 @@ def create_app(test_config=None):
     @app.get("/")
     def index():
         return app.send_static_file("index.html")
+
+    @app.get("/subject/<int:subject_id>")
+    def subject_page(subject_id):
+        return app.send_static_file("subject.html")
 
     return app

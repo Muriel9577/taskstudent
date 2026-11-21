@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Предмет - TaskStudent</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="card">
+    <a class="back" href="/">&larr; Усі предмети</a>
+    <h1 id="subject-title">Предмет</h1>
+    <p id="subject-pass" class="muted"></p>
+
+    <h2>Завдання</h2>
+    <form id="task-form" class="tasks-form">
+      <input id="task-title" placeholder="Назва завдання" maxlength="100" required>
+      <input id="task-deadline" type="date" title="Дедлайн">
+      <input id="task-max" type="number" min="0" step="any" placeholder="Макс. бал" required>
+      <button type="submit">Додати</button>
+    </form>
+    <ul id="tasks" class="list"></ul>
+    <p id="tasks-empty" class="muted" hidden>Завдань ще немає. Додайте перше.</p>
+    <p id="message" role="alert"></p>
+  </main>
+  <script src="/static/subject.js"></script>
+</body>
+</html>
